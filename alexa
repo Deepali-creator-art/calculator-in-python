@@ -1,1 +1,73 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
 
+This is a temporary script file.
+"""
+
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit as pw
+from datetime import date
+import datetime
+import wikipedia
+import pyjokes
+import pyaudio
+listener=sr.Recognizer()
+engine=pyttsx3.init()
+voices=engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
+engine.say("I am alexa")
+
+def talk(text):
+    engine.say(text)
+    engine.runAndWait()
+   
+def  take_command():
+    try:
+        with sr.Microphone() as source:
+            print("Listening.....")
+            voices=listener.listen(source)
+            command=listener.recognize_google(voices)
+            command=command.lower()
+            if 'alexa' in command:
+                command=command.replace('alexa','')
+                print(command)
+    except:
+        pass
+    return command
+def run_alexa():
+    command=take_command()
+    print(command)
+    if 'play' in command:
+        song=command.replace('play','')
+        talk('playing' + song)
+        #print('Playiing')
+        #print('song')
+        pw.playonyt(song)
+    elif 'time' in command:
+        #time=datetime.datetime.now().strftime('%H:%M')
+        time=datetime.datetime.now().strftime('%I:%M %p')
+        print(time)
+        talk('Current time is' + time)
+    elif 'who is the prime minister' in command:
+        person=command.replace('who is the prime minister','')
+        info=wikipedia.summary(person,1)
+        print(info)
+        talk(info)
+    elif 'date' in command:
+        today=date.today()
+        print(today)
+        talk(today)
+    elif 'are you single' in command:
+        talk('I am in a relationship with wifi')
+    elif 'joke' in command:
+        joking=pyjokes.get_joke(language='hi',category='all')
+        print(joking)
+        talk(joking)
+    elif 'help' in command:
+        talk('Sorry,I have a headache')    
+    else:
+        talk('Please say the command again')
+while True:
+    run_alexa()
